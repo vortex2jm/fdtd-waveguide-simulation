@@ -69,11 +69,11 @@ sim = mp.Simulation(cell_size=cell_size,
 animate = mp.Animate2D(
   fields=mp.Ez,
   normalize=True,
-  field_parameters={'alpha': 0.8, 'cmap':'viridis', 'interpolation':'none'},
-  boundary_parameters={'hatch':'o', 'linewidth':1.5, 'facecolor':'y', 'edgecolor':'b', 'alpha':0.3},
+  field_parameters={'alpha': 0.9, 'cmap':'viridis', 'interpolation':'none'},
+  boundary_parameters={'hatch':'/', 'linewidth':1.5, 'facecolor':'y', 'edgecolor':'b', 'alpha':0.5},
   output_plane=mp.Volume(center=mp.Vector3(), size=mp.Vector3(Size_x, Size_y))
 )
 
 sim.run(mp.at_every(0.2, animate), until_after_sources=mp.stop_when_fields_decayed(5, mp.Ez, mp.Vector3(0, Size_y/2 - pml_size - 0.1), 1e-4))
-animate.to_mp4(fps=30, filename='bend_wave_guide_photonics.mp4')
+animate.to_mp4(fps=30, filename='bend_wave_guide_photonics_Ez.mp4')
 plt.close()

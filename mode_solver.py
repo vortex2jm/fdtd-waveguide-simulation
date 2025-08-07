@@ -11,7 +11,7 @@ n_clad = 1.44  # índice do revestimento (SiO2)
 core = mp.Medium(index=n_core)
 cladding = mp.Medium(index=n_clad)
 
-# -------- Geometria da simulação --------
+# -------- Simulation geometry --------
 resolution = 100  # pixels/μm
 geometry_lattice = mp.Lattice(size=mp.Vector3(3, 2))  # tamanho da simulação em μm
 
@@ -26,9 +26,9 @@ geometry = [
 # -------- Parâmetros ópticos --------
 wl0 = 1.55         # comprimento de onda em μm
 freq = 1.0 / wl0   # frequência correspondente
-num_modes = 3      # número de modos a calcular
+num_modes = 1      # número de modos a calcular
 
-# -------- Configuração do solver --------
+# -------- Solver config --------
 ms = mpb.ModeSolver(
     geometry_lattice=geometry_lattice,
     geometry=geometry,
@@ -38,7 +38,7 @@ ms = mpb.ModeSolver(
 
 ms.init_params(mp.NO_PARITY, True)
 
-# -------- Visualização da permissividade --------
+# -------- Permittivity view --------
 eps = ms.get_epsilon()
 x = np.arange(eps.shape[0]) / resolution
 y = np.arange(eps.shape[1]) / resolution
@@ -58,31 +58,48 @@ k_min = freq * n_clad
 k_max = freq * n_core
 tol = 1e-5
 neff = []
-cmap = 'seismic'
+cmap = 'viridis'
 
 for mode_num in range(1, num_modes + 1):
-    # Encontra o modo
+    # Finds the mode
     k_mpb = ms.find_k(mp.NO_PARITY, freq, mode_num, mode_num, mp.Vector3(0, 0, 1), tol, k_guess, k_min, k_max)
     neff_val = k_mpb[0] / freq
     neff.append(neff_val)
 
-    # Campos
+    # Fields
     E = ms.get_efield(which_band=mode_num)
+    H = ms.get_hfield(which_band=mode_num)
     P = ms.get_poynting(which_band=mode_num)
 
-    Ex = E[:, :, 0, 0]
+    Ex = E[:,:,0,0]
+    Ey = E[:,:,0,1]
+    Ez = E[:,:,0,2]
     Pz = 0.5 * np.real(P[:, :, 0, 2])
 
-    # Plot Ex
     plt.contourf(x, y, np.abs(Ex.transpose()), 202, cmap=cmap)
     plt.colorbar()
     plt.xlabel("x (μm)")
     plt.ylabel("y (μm)")
-    plt.title(f"|Ex| do modo {mode_num}")
+    plt.title(f"Ex do modo {mode_num}")
     plt.savefig(f"Ex_mode_{mode_num}.png")
     plt.close()
 
-    # Plot Poynting z
+    plt.contourf(x, y, np.abs(Ey.transpose()), 202, cmap=cmap)
+    plt.colorbar()
+    plt.xlabel("x (μm)")
+    plt.ylabel("y (μm)")
+    plt.title(f"Ey do modo {mode_num}")
+    plt.savefig(f"Ey_mode_{mode_num}.png")
+    plt.close()
+
+    plt.contourf(x, y, np.abs(Ez.transpose()), 202, cmap=cmap)
+    plt.colorbar()
+    plt.xlabel("x (μm)")
+    plt.ylabel("y (μm)")
+    plt.title(f"Ez do modo {mode_num}")
+    plt.savefig(f"Ez_mode_{mode_num}.png")
+    plt.close()
+
     plt.contourf(x, y, Pz.transpose(), 202, cmap=cmap)
     plt.colorbar()
     plt.xlabel("x (μm)")
@@ -91,7 +108,3 @@ for mode_num in range(1, num_modes + 1):
     plt.savefig(f"Poynting_mode_{mode_num}.png")
     plt.close()
 
-# -------- Saída dos índices efetivos --------
-print("Índices efetivos dos modos encontrados:")
-for i, n in enumerate(neff, start=1):
-    print(f"Modo {i}: neff = {n:.6f}")

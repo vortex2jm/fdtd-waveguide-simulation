@@ -97,7 +97,8 @@ sim = mp.Simulation(cell_size=cell_size,
 # Visualiza a simulação inteira
 animate = mp.Animate2D(fields=mp.Ez,
                        normalize=True,
-                       field_parameters={'alpha': 0.9, 'cmap': 'RdBu'},
+                       field_parameters={'alpha': 0.9, 'cmap':'viridis', 'interpolation':'none'},
+                       boundary_parameters={'hatch':'/', 'linewidth':1.5, 'facecolor':'y', 'edgecolor':'b', 'alpha':0.5},
                        output_plane=mp.Volume(center=mp.Vector3(0, cavity_offset_y - cavity_size_y/2), size=mp.Vector3(cell_x, cell_y)))
 
 ez_time = []
