@@ -6,7 +6,7 @@ from meep import mpb
 mp.verbosity(0)
 
 # -------- Parâmetros do material --------
-n_core = 3.5   # índice do núcleo (Silício)
+n_core = 2.5   # índice do núcleo (Silício)
 n_clad = 1.44  # índice do revestimento (SiO2)
 core = mp.Medium(index=n_core)
 cladding = mp.Medium(index=n_clad)
