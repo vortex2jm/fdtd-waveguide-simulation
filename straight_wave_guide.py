@@ -2,7 +2,7 @@ import meep as mp
 import matplotlib.pyplot as plt
 
 
-# -------------------- Parâmetros da simulação --------------------
+# -------------------- Parameters --------------------
 Size_x = 3
 Size_y = 10
 Size_z = 0
@@ -17,8 +17,8 @@ n_clad = 1.44  # SiO2
 core = mp.Medium(index=n_core)
 cladding = mp.Medium(index=n_clad)
 
-w = 0.5  # largura do guia
-h = 0.22  # altura do guia
+w = 0.5  # width
+h = 0.22  # height
 
 geometry = [
     mp.Block(center=mp.Vector3(), size=mp.Vector3(w, mp.inf, h), material=core),
@@ -45,20 +45,21 @@ sources = [mp.EigenModeSource(pulse,
                               eig_band=1)]
 
 
-# -------------------- Inicializa a simulação --------------------
+# -------------------- Simulation --------------------
 sim = mp.Simulation(cell_size=cell_size,
                     resolution=resolution,
                     boundary_layers=pml_layers,
                     sources=sources,
                     geometry=geometry)
 
-# -------------------- Salvar cortes 2D estáticos --------------------
+
+# -------------------- Save geometry --------------------
 sim.plot2D(output_plane=mp.Volume(center=mp.Vector3(), size=mp.Vector3(Size_x, Size_y)))
 plt.savefig("simXY.png")
 plt.close()
 
 
-# -------------------- Animação: Captura de frames do Ex --------------------
+# -------------------- Animation --------------------
 animate = mp.Animate2D(
   fields=mp.Ez,
   normalize=True,

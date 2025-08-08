@@ -5,28 +5,29 @@ from meep import mpb
 
 mp.verbosity(0)
 
-# -------- Parâmetros do material --------
-n_core = 2.5   # índice do núcleo (Silício)
-n_clad = 1.44  # índice do revestimento (SiO2)
+# -------- Material parameters --------
+n_core = 2.5   # Silicon
+n_clad = 1.44  # (SiO2)
 core = mp.Medium(index=n_core)
 cladding = mp.Medium(index=n_clad)
 
 # -------- Simulation geometry --------
 resolution = 100  # pixels/μm
-geometry_lattice = mp.Lattice(size=mp.Vector3(3, 2))  # tamanho da simulação em μm
+geometry_lattice = mp.Lattice(size=mp.Vector3(3, 2))  # simulation size (microns)
 
-w = 0.7   # largura do núcleo (μm)
-h = 0.25  # altura do núcleo (μm)
+w = 0.7   # width
+h = 0.25  # height
 
 geometry = [
-    mp.Block(center=mp.Vector3(), size=mp.Vector3(mp.inf, mp.inf), material=cladding),  # fundo de SiO2
-    mp.Block(center=mp.Vector3(), size=mp.Vector3(w, h), material=core)  # guia retangular
+    mp.Block(center=mp.Vector3(), size=mp.Vector3(mp.inf, mp.inf), material=cladding),
+    mp.Block(center=mp.Vector3(), size=mp.Vector3(w, h), material=core) 
 ]
 
-# -------- Parâmetros ópticos --------
-wl0 = 1.55         # comprimento de onda em μm
-freq = 1.0 / wl0   # frequência correspondente
-num_modes = 1      # número de modos a calcular
+# -------- Optical parameters --------
+wl0 = 1.55         # wave length
+freq = 1.0 / wl0   # freq
+num_modes = 1      # amount of modes to calculate
+
 
 # -------- Solver config --------
 ms = mpb.ModeSolver(
@@ -51,7 +52,7 @@ plt.title("Distribuição da Permissividade (ε)")
 plt.savefig("Permittivity.png")
 plt.close()
 
-# -------- Cálculo dos modos --------
+# -------- Mode calc --------
 n_mode_guess = 0.5 * (n_core + n_clad)
 k_guess = freq * n_mode_guess
 k_min = freq * n_clad
@@ -107,4 +108,3 @@ for mode_num in range(1, num_modes + 1):
     plt.title(f"Poynting z do modo {mode_num}")
     plt.savefig(f"Poynting_mode_{mode_num}.png")
     plt.close()
-

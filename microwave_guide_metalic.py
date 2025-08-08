@@ -17,8 +17,8 @@ air = mp.Medium(epsilon=1.0)
 metal = mp.Medium(D_conductivity=1e7)  # High conductivity
 
 # ------------------ Waveguide ------------------
-guide_width = 8   # cm (ex: WR-340 has intern width ≈ 8.636 cm)
-guide_height = 8  # bidimensional
+guide_width = 8   # cm 
+guide_height = 8  # cm
 
 radius = 12  # elbow radius
 in_offset = radius - guide_width / 2
@@ -26,21 +26,17 @@ out_offset = radius - guide_width / 2
 
 # Geometry
 geometry = [
-    # Parte reta inferior
     mp.Block(center=mp.Vector3(x=in_offset, y=-Size_y/4),
              size=mp.Vector3(guide_width, Size_y/2, mp.inf),
              material=air),
 
-    # Parte reta esquerda
     mp.Block(center=mp.Vector3(y=out_offset, x=-Size_x/4),
              size=mp.Vector3(Size_x/2, guide_width, mp.inf),
              material=air),
 
-    # Cotovelo curvo com ar
     mp.Wedge(radius=radius, height=mp.inf, material=air,
              wedge_angle=np.pi/2, wedge_start=mp.Vector3(1.0, 0.0, 0.0)),
 
-    # Recheio metálico do resto da cavidade
     mp.Wedge(radius=radius - guide_width, height=mp.inf, material=metal,
              wedge_angle=np.pi/2, wedge_start=mp.Vector3(1.0, 0.0, 0.0))
 ]
@@ -61,7 +57,7 @@ sources = [mp.Source(src=pulse,
                      )]
 
 
-# ------------------ Simulação ------------------
+# ------------------ Simulation ------------------
 sim = mp.Simulation(cell_size=cell_size,
                     resolution=resolution,
                     boundary_layers=pml_layers,
@@ -70,13 +66,13 @@ sim = mp.Simulation(cell_size=cell_size,
                     default_material=metal)
 
 
-# ------------------ Visualização da geometria ------------------
+# ------------------ Geometry View ------------------
 sim.plot2D(output_plane=mp.Volume(center=mp.Vector3(), size=mp.Vector3(Size_x, Size_y)))
 plt.savefig("waveguide_geom.png")
 plt.close()
 
 
-# ------------------ Animação do campo ------------------
+# ------------------ Animation ------------------
 animate = mp.Animate2D(
     fields=mp.Ez,
     normalize=True,

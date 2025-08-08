@@ -20,8 +20,8 @@ core = mp.Medium(index=n_core)
 cladding = mp.Medium(index=n_clad)
 
 radius = 5
-w = 0.5   # waveguide width
-h = 0.22  # waveguide height
+w = 0.5   # width
+h = 0.22  # height
 in_offset = radius - w/2
 out_offset = radius - w/2
 

@@ -2,21 +2,21 @@ import meep as mp
 import numpy as np
 import matplotlib.pyplot as plt
 
-# --- Parameters ---
+# --- Parameters -----
 Size_x = 30  # cm
 Size_y = 30  # cm
 cell_size = mp.Vector3(Size_x, Size_y, 0)
 
-resolution = 5  # células por cm (baixa resolução suficiente p/ 2.45 GHz)
-pml_layers = []  # paredes refletem — cavidade fechada
+resolution = 5 
+pml_layers = []  # Total reflection
 
 
-# --- Meios ---
+# ------- Medium -----------
 air = mp.Medium(epsilon=1.0)
 metal = mp.Medium(D_conductivity=1e7)  # condutividade maior
 
 
-# --- Paredes metálicas da cavidade ---
+# -------- Geometry --------
 wall_thickness = 0.5  # cm
 geometry = [
     mp.Block(center=mp.Vector3(y=Size_y/2 - wall_thickness/2),
@@ -34,8 +34,9 @@ geometry = [
 ]
 
 
-# --- Fonte contínua: 2.45 GHz ---
-freq_center = 2.45e9 * (1/3e10)  # Convertendo Hz para 1/cm (c = 3e10 cm/s)
+# --- Continuous Source 2.45GHz ---
+freq_center = 2.45e9 * (1/3e10)  # Hz to 1/cm (c = 3e10 cm/s)
+
 
 sources = [mp.Source(mp.ContinuousSource(frequency=freq_center),
                      component=mp.Ez,
@@ -43,7 +44,7 @@ sources = [mp.Source(mp.ContinuousSource(frequency=freq_center),
                      size=mp.Vector3(0, 0))]  # ponto
 
 
-# --- Simulação ---
+# ------------- Simulation --------------
 sim = mp.Simulation(cell_size=cell_size,
                     resolution=resolution,
                     geometry=geometry,
@@ -52,7 +53,7 @@ sim = mp.Simulation(cell_size=cell_size,
                     default_material=air)
 
 
-# --- Animação ---
+# ------------- Animation --------------
 animate = mp.Animate2D(fields=mp.Ez,
                         normalize=True,
                         field_parameters={'alpha': 0.9, 'cmap': 'RdBu'},
@@ -80,11 +81,11 @@ t = np.linspace(0, n*dt, n)
 ez_fft = fft(ez_time)
 freqs = fftfreq(n, dt)
 
-pos_freqs = freqs[:n//2] * 3e10  # converter de 1/cm para Hz
+pos_freqs = freqs[:n//2] * 3e10  # 1/cm para Hz
 amp = np.abs(ez_fft[:n//2])
 
 plt.figure(figsize=(8,4))
-plt.plot(pos_freqs * 1e-9, amp)  # GHz
+plt.plot(pos_freqs * 1e-9, amp)  # GHz scale
 plt.xlabel("Frequência (GHz)")
 plt.ylabel("Amplitude")
 plt.title("Espectro de Ressonância da Cavidade")
