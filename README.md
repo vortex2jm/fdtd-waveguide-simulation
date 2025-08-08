@@ -45,3 +45,9 @@ python3 <file_name.py>
 and let the magic happen!
 
 ## Some Results
+
+![](/assets/bend_wave_guide_photonics_Ez.gif)
+![](/assets/microwave_oven.gif)
+![](/assets/Ex_mode_1.png)
+![](/assets/Ey_mode_1.png)
+![](/assets/Ez_mode_1.png)
